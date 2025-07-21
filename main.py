@@ -74,7 +74,7 @@ def job():
 
 job()
 #schedule.every().day.at("02:00").do(job)  # 09:00 WIB
-schedule.every(5).minutes.do(job)
+schedule.every(180).minutes.do(job)
 
 while True:
     schedule.run_pending()
