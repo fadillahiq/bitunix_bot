@@ -8,7 +8,8 @@ CHAT_ID = "5246334675"
 PAIRS = [
     "ETHUSDT", "BTCUSDT", "AAVEUSDT", "DOGEUSDT", "XRPUSDT",
     "MATICUSDT", "SUIUSDT", "OPUSDT", "HBARUSDT", "PEPEUSDT",
-    "ARBUSDT", "INJUSDT", "RNDRUSDT", "LINKUSDT", "NEARUSDT"
+    "ARBUSDT", "INJUSDT", "RNDRUSDT", "LINKUSDT", "NEARUSDT",
+    "PENGUUSDT"
 ]
 API = "https://fapi.bitunix.com/api/v1/futures/market/kline"
 
