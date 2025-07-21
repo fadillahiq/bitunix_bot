@@ -52,7 +52,9 @@ def format_call(sig):
 ✅ Confidence Level: {confidence} ☑️
 
 Sinyal ini berdasarkan breakout/pullback + struktur harga TF 1H–4H dan Fibonacci Extension.
-Eksekusi dengan disiplin dan sesuaikan leverage."""
+Eksekusi dengan disiplin dan sesuaikan leverage.
+
+"""
 def send_to_discord(text):
     requests.post('https://discord.com/api/webhooks/1396241698929119273/9rzJbZXVoEgBWEZk69njsnFJe_whzG9av58lwBewII9owdqiP7-F0uDvM7f_DZzrh1Al', json={'content': text})
 def send_to_telegram(text):
