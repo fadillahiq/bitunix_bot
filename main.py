@@ -48,7 +48,7 @@ def format_call(sig):
 🛑 Stop Loss: {sig['sl']}
 🎯 Take Profit: {sig['tp']}
 📊 Risk Reward: {rr}
-✅ Confidence Level: MEDIUM ☑️
+✅ Confidence Level: {confidence} ☑️
 
 Sinyal ini berdasarkan breakout/pullback + struktur harga TF 1H–4H dan Fibonacci Extension.
 Eksekusi dengan disiplin dan sesuaikan leverage."""
