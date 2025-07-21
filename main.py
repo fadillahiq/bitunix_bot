@@ -73,7 +73,8 @@ def job():
         print("Tidak ada sinyal valid hari ini.")
 
 job()
-schedule.every().day.at("02:00").do(job)  # 09:00 WIB
+#schedule.every().day.at("02:00").do(job)  # 09:00 WIB
+schedule.every(5).minutes.do(job)
 
 while True:
     schedule.run_pending()
