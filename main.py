@@ -67,10 +67,9 @@ def detect_signal(symbol):
     return None
 
 def format_call(sig):
-    smc_note = '\n📖 SMC Analysis: Break of Structure + Pullback' if sig.get('smc') else ''
     rr = round(abs(sig['tp'] - sig['entry']) / abs(sig['entry'] - sig['sl']), 2)
     confidence = "HIGH" if rr > 2.5 else "MEDIUM" if rr > 1.5 else "LOW"
-    return f{smc_note}"""🔥 MASTER CALL: {sig['symbol']} – {sig['side']}
+    return """🔥 MASTER CALL: {sig['symbol']} – {sig['side']}
 
 📍 Entry: {sig['entry']}
 🛑 Stop Loss: {sig['sl']}
