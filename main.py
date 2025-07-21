@@ -43,8 +43,7 @@ def detect_signal(symbol):
 def format_call(sig):
     rr = round(abs(sig['tp'] - sig['entry']) / abs(sig['entry'] - sig['sl']), 2)
     confidence = "HIGH" if rr > 2.5 else "MEDIUM" if rr > 1.5 else "LOW"
-    leverage = '10x – 15x' if confidence == 'HIGH' else '5x – 10x' if confidence == 'MEDIUM' else '3x – 5x'
-    return f{leverage}\n"""{prefix} {sig['symbol']} – {sig['side']}
+    return f"""🔥 MASTER CALL: {sig['symbol']} – {sig['side']}
 
 📍 Entry: {sig['entry']}
 🛑 Stop Loss: {sig['sl']}
