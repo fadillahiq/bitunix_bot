@@ -40,10 +40,11 @@ def detect_signal(symbol):
     except: pass
     return None
 
-def format_call(sig):
+def format_call(sig, swing=FALSE):
     rr = round(abs(sig['tp'] - sig['entry']) / abs(sig['entry'] - sig['sl']), 2)
     confidence = "HIGH" if rr > 2.5 else "MEDIUM" if rr > 1.5 else "LOW"
-    return f"""🔥 MASTER CALL: {sig['symbol']} – {sig['side']}
+    leverage = '10x – 15x' if confidence == 'HIGH' else '5x – 10x' if confidence == 'MEDIUM' else '3x – 5x'
+    return f{leverage}\n"""{prefix} {sig['symbol']} – {sig['side']}
 
 📍 Entry: {sig['entry']}
 🛑 Stop Loss: {sig['sl']}
@@ -58,6 +59,30 @@ def send_to_discord(text):
 def send_to_telegram(text):
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
     requests.post(url, data={"chat_id": CHAT_ID, "text": text})
+def detect_swing_signal(symbol):
+    k1d = get_klines(symbol, interval="1d", limit=50)
+    k1w = get_klines(symbol, interval="1w", limit=50)
+    if not k1d or not k1w: return None
+    try:
+        close1d = [float(i["close"]) for i in k1d]
+        close1w = [float(i["close"]) for i in k1w]
+        if len(close1d) < 20 or len(close1w) < 20: return None
+        last = close1d[-1]
+        high = max(close1d[-20:])
+        low = min(close1d[-20:])
+        trend_d = "up" if last > max(close1d[-21:-1]) else "down" if last < min(close1d[-21:-1]) else "sideways"
+        trend_w = "up" if last > max(close1w[-21:-1]) else "down" if last < min(close1w[-21:-1]) else "sideways"
+        if trend_d != trend_w: return None
+        if last > high * 0.995:
+            return {"symbol": symbol, "side": "LONG", "entry": last,
+                    "sl": round(low, 2), "tp": round(last + (high - low) * 2, 2),
+                    "type": "SWING"}
+        elif last < low * 1.005:
+            return {"symbol": symbol, "side": "SHORT", "entry": last,
+                    "sl": round(high, 2), "tp": round(last - (high - low) * 2, 2),
+                    "type": "SWING"}
+    except: pass
+    return None
 
 def job():
     print("Menganalisis...")
@@ -69,6 +94,13 @@ def job():
             send_to_discord(msg)
             send_to_telegram(msg)
             print(f"Sinyal dikirim: {sig['symbol']} - {sig['side']}")
+    swing_signals = [detect_swing_signal(p) for p in PAIRS]
+    swing_valids = [s for s in swing_signals if s]
+    for s in swing_valids:
+        msg = format_call(s, swing=True)
+        send_to_telegram(msg)
+        send_to_discord(msg)
+        print(f"Sinyal SWING dikirim: {s['symbol']} - {s['side']}")
     else:
         print("Tidak ada sinyal valid hari ini.")
 
