@@ -21,6 +21,32 @@ def get_klines(symbol, interval="1h", limit=50):
             return d["data"]
     except: pass
     return []
+#ubah
+def detect_smc_signal(symbol):
+    k = get_klines(symbol, interval="1h", limit=50)
+    if not k or len(k) < 30: return None
+    try:
+        closes = [float(i["close"]) for i in k if "close" in i]
+        highs = [float(i["high"]) for i in k if "high" in i]
+        lows = [float(i["low"]) for i in k if "low" in i]
+        last = closes[-1]
+
+        swing_high = max(highs[-30:-10])
+        swing_low = min(lows[-30:-10])
+
+        broke_up = any(h > swing_high for h in highs[-10:])
+        broke_down = any(l < swing_low for l in lows[-10:])
+
+        if broke_up and last > swing_high:
+            return {"symbol": symbol, "side": "LONG", "entry": last,
+                    "sl": round(swing_low, 2), "tp": round(last + (swing_high - swing_low)*1.618, 2),
+                    "smc": True}
+        elif broke_down and last < swing_low:
+            return {"symbol": symbol, "side": "SHORT", "entry": last,
+                    "sl": round(swing_high, 2), "tp": round(last - (swing_high - swing_low)*1.618, 2),
+                    "smc": True}
+    except: pass
+    return None
 
 def detect_signal(symbol):
     k = get_klines(symbol)
@@ -41,9 +67,11 @@ def detect_signal(symbol):
     return None
 
 def format_call(sig):
+    smc_note = '\n📖 SMC Analysis: Break of Structure + Pullback' if sig.get('smc') else ''
     rr = round(abs(sig['tp'] - sig['entry']) / abs(sig['entry'] - sig['sl']), 2)
     confidence = "HIGH" if rr > 2.5 else "MEDIUM" if rr > 1.5 else "LOW"
-    return f"""🔥 MASTER CALL: {sig['symbol']} – {sig['side']}
+    return f{smc_note}"""🔥 MASTER CALL: {sig['symbol']} – {sig['side']}
+    #return f"""🔥 MASTER CALL: {sig['symbol']} – {sig['side']}
 
 📍 Entry: {sig['entry']}
 🛑 Stop Loss: {sig['sl']}
@@ -64,6 +92,8 @@ def send_to_telegram(text):
 def job():
     print("Menganalisis...")
     signals = [detect_signal(p) for p in PAIRS]
+    smc_signals = [detect_smc_signal(p) for p in PAIRS] #ubah
+    signals += [s for s in smc_signals if s] #ubah
     valids = [s for s in signals if s]
     if valids:
         for sig in valids:
