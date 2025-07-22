@@ -56,7 +56,7 @@ def format_signal(symbol, side, entry, sl, tp, rr):
     lot = 0.1
     risk = round(100, 2)
     reward = round(risk * rr, 2)
-    conf = "HIGH" if rr > 2.5 else "MED" if rr > 1.5 else "LOW"
+    conf = "HIGH" if rr > 2 else "MED" if rr > 1.2 else "LOW"
     return f"""
 🔥 T-REX: {symbol.replace("USDT", "/USD")} - {side}
 📍 Entry: {entry}
