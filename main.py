@@ -20,7 +20,7 @@ def get_klines(symbol, interval="1h", limit=50):
     except:
         pass
     return []
-    
+
 def detect_smc_signal(symbol):
     k = get_klines(symbol, interval="1h", limit=50)
     if not k or len(k) < 30: return None
@@ -34,32 +34,38 @@ def detect_smc_signal(symbol):
         swing_low = min(lows[-30:-10])
         broke_up = any(h > swing_high for h in highs[-10:])
         broke_down = any(l < swing_low for l in lows[-10:])
-        
+        fib = 0.618
 
         if broke_up and last > swing_high:
-            tp = last + (swing_high - swing_low)
-            sl = swing_low
-            rr = abs(tp - last) / abs(last - sl)
+            tp = round(swing_high - (swing_high - swing_low) * (1 - fib), 2)
+            sl = round(swing_low, 2)
+            rr = round(abs(tp - last) / abs(last - sl), 2)
             return format_signal(symbol, "LONG", last, sl, tp, rr)
         elif broke_down and last < swing_low:
-            tp = last - (swing_high - swing_low)
-            sl = swing_high
-            rr = abs(last - tp) / abs(sl - last)
+            tp = round(swing_low + (swing_high - swing_low) * (1 - fib), 2)
+            sl = round(swing_high, 2)
+            rr = round(abs(last - tp) / abs(sl - last), 2)
             return format_signal(symbol, "SHORT", last, sl, tp, rr)
     except:
         pass
     return None
 
 def format_signal(symbol, side, entry, sl, tp, rr):
-    reward = risk * rr
-    conf = "HIGH" if rr > 2.0 else "MED" if rr > 1.2 else "LOW"
+    pip_sl = round(abs(sl - entry), 2)
+    pip_tp = round(abs(tp - entry), 2)
+    lot = 0.1
+    risk = round(100, 2)
+    reward = round(risk * rr, 2)
+    conf = "HIGH" if rr > 2.5 else "MED" if rr > 1.5 else "LOW"
     return f"""
-🔥 MASTER CALL: {symbol.replace("USDT", "/USD")} - {side}
-
+🔥 T-REX: {symbol.replace("USDT", "/USD")} - {side}
 📍 Entry: {entry}
-🛑 Stop Loss: {sl}
-🎯 Take Profit: {tp}
-📊 Risk Reward: 1:{int(rr)}
+🛑 Stop Loss: {sl} (~{pip_sl} pip)
+🎯 Take Profit: {tp} (~{pip_tp} pip)
+📊 Risk Reward: 1:{int(rr)} (~{pip_tp} pip)
+💼 Lot Size (rekomendasi): {lot} lot
+🔻 Risk per Trade: ~${risk} untuk {pip_sl} pip SL
+🎯 Reward Target: ~${reward} untuk {pip_tp} pip TP
 ✅ Confidence Level: {conf}
 """
 
