@@ -20,7 +20,7 @@ def get_klines(symbol, interval="1h", limit=50):
     except:
         pass
     return []
-
+    
 def detect_smc_signal(symbol):
     k = get_klines(symbol, interval="1h", limit=50)
     if not k or len(k) < 30: return None
@@ -39,24 +39,22 @@ def detect_smc_signal(symbol):
         if broke_up and last > swing_high:
             sl = swing_low
             tp = last + (last - sl)
-            tp2 = last + 2 * (last - sl)
-            tp3 = last + 3 * (last - sl)
             sl = swing_low
             rr = abs(tp - last) / abs(last - sl)
-            return format_signal(symbol, "LONG", last, sl, tp1, tp2, tp3, rr)
+            return format_signal(symbol, "LONG", last, sl, tp, rr)
         elif broke_down and last < swing_low:
             sl = swing_high
             tp = last - (sl - last)
-            tp2 = last - 2 * (sl - last)
-            tp3 = last - 3 * (sl - last)
             sl = swing_high
             rr = abs(last - tp) / abs(sl - last)
-            return format_signal(symbol, "SHORT", last, sl, tp1, tp2, tp3, rr)
+            return format_signal(symbol, "SHORT", last, sl, tp, rr)
     except:
         pass
     return None
-    
-def format_signal(symbol, side, entry, sl, tp, tp2, tp3, rr):
+
+def format_signal(symbol, side, entry, sl, tp, rr):
+    pip_sl = abs(sl - entry)
+    pip_tp = abs(tp - entry)
     lot = 0.1
     risk = 100
     reward = risk * rr
@@ -66,7 +64,7 @@ def format_signal(symbol, side, entry, sl, tp, tp2, tp3, rr):
 
 📍 Entry: {entry}
 🛑 Stop Loss: {sl}
-🎯 Take Profit: TP1: {tp} TP2: {tp2} TP3: {tp3}
+🎯 Take Profit: {tp}
 📊 Risk Reward: 1:{int(rr)}
 🔻 Risk per Trade: ~${risk}
 🎯 Reward Target: ~${reward}
