@@ -37,12 +37,12 @@ def detect_smc_signal(symbol):
         
 
         if broke_up and last > swing_high:
-            tp = swing_high
+            tp = last + (swing_high - swing_low)
             sl = swing_low
             rr = abs(tp - last) / abs(last - sl)
             return format_signal(symbol, "LONG", last, sl, tp, rr)
         elif broke_down and last < swing_low:
-            tp = swing_low
+            tp = last - (swing_high - swing_low)
             sl = swing_high
             rr = abs(last - tp) / abs(sl - last)
             return format_signal(symbol, "SHORT", last, sl, tp, rr)
@@ -58,15 +58,14 @@ def format_signal(symbol, side, entry, sl, tp, rr):
     reward = risk * rr
     conf = "HIGH" if rr > 2.5 else "MED" if rr > 1.5 else "LOW"
     return f"""
-🔥 T-REX: {symbol.replace("USDT", "/USD")} - {side}
+🔥 MASTER CALL: {symbol.replace("USDT", "/USD")} - {side}
 
 📍 Entry: {entry}
-🛑 Stop Loss: {sl} (~{pip_sl} pip)
-🎯 Take Profit: {tp} (~{pip_tp} pip)
-📊 Risk Reward: 1:{int(rr)} (~{pip_tp} pip)
-💼 Lot Size (rekomendasi): {lot} lot
-🔻 Risk per Trade: ~${risk} untuk {pip_sl} pip SL
-🎯 Reward Target: ~${reward} untuk {pip_tp} pip TP
+🛑 Stop Loss: {sl}
+🎯 Take Profit: {tp}
+📊 Risk Reward: 1:{int(rr)}
+🔻 Risk per Trade: ~${risk}
+🎯 Reward Target: ~${reward}
 ✅ Confidence Level: {conf}
 """
 
