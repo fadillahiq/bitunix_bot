@@ -9,6 +9,7 @@ PAIRS = [
     "ETHUSDT", "BTCUSDT", "AAVEUSDT", "DOGEUSDT", "XRPUSDT",
     "MATICUSDT", "SUIUSDT", "OPUSDT", "HBARUSDT", "PEPEUSDT",
     "ARBUSDT", "INJUSDT", "RNDRUSDT", "LINKUSDT", "NEARUSDT"
+    "SOLUSDT"
 ]
 API = "https://fapi.bitunix.com/api/v1/futures/market/kline"
 
@@ -49,6 +50,8 @@ def format_call(sig):
 🎯 Take Profit: {sig['tp']}
 📊 Risk Reward: {rr}
 💯 Confidence Level: {confidence} ✅
+
+BITUNIX BOT
 """
 
 def send_to_telegram(text):
