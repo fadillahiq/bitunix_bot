@@ -32,10 +32,10 @@ def detect_signal(symbol):
 
         if last > high * 0.995:
             return {"symbol": symbol, "side": "LONG", "entry": last,
-                    "sl": round(low, 4), "tp": round(last + (high - low)*1.618, 2)}
+                    "sl": round(low, 4), "tp": round(last + (high - low)*1.618, 4)}
         elif last < low * 1.005:
             return {"symbol": symbol, "side": "SHORT", "entry": last,
-                    "sl": round(high, 4), "tp": round(last - (high - low)*1.618, 2)}
+                    "sl": round(high, 4), "tp": round(last - (high - low)*1.618, 4)}
     except: pass
     return None
 
