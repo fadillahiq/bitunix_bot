@@ -37,12 +37,16 @@ def detect_smc_signal(symbol):
         
 
         if broke_up and last > swing_high:
-            tp = last + (swing_high - swing_low)
+            tp = last + (last - sl)
+            tp2 = last + 2 * (last - sl)
+            tp3 = last + 3 * (last - sl)
             sl = swing_low
             rr = abs(tp - last) / abs(last - sl)
             return format_signal(symbol, "LONG", last, sl, tp, rr)
         elif broke_down and last < swing_low:
-            tp = last - (swing_high - swing_low)
+            tp = last - (sl - last)
+            tp2 = last - 2 * (sl - last)
+            tp3 = last - 3 * (sl - last)
             sl = swing_high
             rr = abs(last - tp) / abs(sl - last)
             return format_signal(symbol, "SHORT", last, sl, tp, rr)
@@ -51,18 +55,16 @@ def detect_smc_signal(symbol):
     return None
 
 def format_signal(symbol, side, entry, sl, tp, rr):
-    pip_sl = abs(sl - entry)
-    pip_tp = abs(tp - entry)
     lot = 0.1
     risk = 100
     reward = risk * rr
-    conf = "HIGH" if rr > 2.5 else "MED" if rr > 1.5 else "LOW"
+    conf = "HIGH" if rr > 2.0 else "MED" if rr > 1.2 else "LOW"
     return f"""
 🔥 MASTER CALL: {symbol.replace("USDT", "/USD")} - {side}
 
 📍 Entry: {entry}
 🛑 Stop Loss: {sl}
-🎯 Take Profit: {tp}
+🎯 Take Profit: TP1: {tp} TP2: {tp2} TP3: {tp3}
 📊 Risk Reward: 1:{int(rr)}
 🔻 Risk per Trade: ~${risk}
 🎯 Reward Target: ~${reward}
