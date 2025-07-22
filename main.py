@@ -34,31 +34,32 @@ def detect_smc_signal(symbol):
         swing_low = min(lows[-30:-10])
         broke_up = any(h > swing_high for h in highs[-10:])
         broke_down = any(l < swing_low for l in lows[-10:])
-        fib = 0.618
+        
 
         if broke_up and last > swing_high:
-            tp = round(swing_high - (swing_high - swing_low) * (1 - fib), 2)
-            sl = round(swing_low, 2)
-            rr = round(abs(tp - last) / abs(last - sl), 2)
+            tp = swing_high
+            sl = swing_low
+            rr = abs(tp - last) / abs(last - sl)
             return format_signal(symbol, "LONG", last, sl, tp, rr)
         elif broke_down and last < swing_low:
-            tp = round(swing_low + (swing_high - swing_low) * (1 - fib), 2)
-            sl = round(swing_high, 2)
-            rr = round(abs(last - tp) / abs(sl - last), 2)
+            tp = swing_low
+            sl = swing_high
+            rr = abs(last - tp) / abs(sl - last)
             return format_signal(symbol, "SHORT", last, sl, tp, rr)
     except:
         pass
     return None
 
 def format_signal(symbol, side, entry, sl, tp, rr):
-    pip_sl = round(abs(sl - entry), 2)
-    pip_tp = round(abs(tp - entry), 2)
+    pip_sl = abs(sl - entry)
+    pip_tp = abs(tp - entry)
     lot = 0.1
-    risk = round(100, 2)
-    reward = round(risk * rr, 2)
+    risk = 100
+    reward = risk * rr
     conf = "HIGH" if rr > 2.5 else "MED" if rr > 1.5 else "LOW"
     return f"""
 🔥 T-REX: {symbol.replace("USDT", "/USD")} - {side}
+
 📍 Entry: {entry}
 🛑 Stop Loss: {sl} (~{pip_sl} pip)
 🎯 Take Profit: {tp} (~{pip_tp} pip)
