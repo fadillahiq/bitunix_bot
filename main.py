@@ -49,9 +49,7 @@ def format_call(sig):
 🎯 Take Profit: {sig['tp']}
 📊 Risk Reward: {rr}
 💯 Confidence Level: {confidence} ✅
-
-Sinyal ini berdasarkan breakout/pullback + struktur harga TF 1H–4H dan Fibonacci Extension.
-Eksekusi dengan disiplin dan sesuaikan leverage."""
+"""
 
 def send_to_telegram(text):
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
@@ -70,7 +68,7 @@ def job():
         print("Tidak ada sinyal valid hari ini.")
 
 job()
-schedule.every().day.at("02:00").do(job)  # 09:00 WIB
+schedule.every(180).minutes.do(job)  # 09:00 WIB
 
 while True:
     schedule.run_pending()
