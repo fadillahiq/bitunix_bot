@@ -41,13 +41,14 @@ def detect_signal(symbol):
 
 def format_call(sig):
     rr = round(abs(sig['tp'] - sig['entry']) / abs(sig['entry'] - sig['sl']), 2)
+    confidence = "HIGH" if rr > 2.5 else "MEDIUM" if rr > 1.5 else "LOW"
     return f"""🔥 MASTER CALL: {sig['symbol']} – {sig['side']}
 
 📍 Entry: {sig['entry']}
 🛑 Stop Loss: {sig['sl']}
 🎯 Take Profit: {sig['tp']}
 📊 Risk Reward: {rr}
-✅ Confidence Level: MEDIUM ☑️
+💯 Confidence Level: {confidence} ✅
 
 Sinyal ini berdasarkan breakout/pullback + struktur harga TF 1H–4H dan Fibonacci Extension.
 Eksekusi dengan disiplin dan sesuaikan leverage."""
