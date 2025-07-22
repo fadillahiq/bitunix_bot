@@ -38,17 +38,21 @@ def detect_smc_signal(symbol):
         broke_down = any(l < swing_low for l in lows[-10:])
 
         if broke_up and last > swing_high:
+            fib_retracement = 0.618
+            tp = round(swing_high - (swing_high - swing_low) * (1 - fib_retracement), 2)
             return {"symbol": symbol, "side": "LONG", "entry": last,
-                    "sl": round(swing_low, 2), "tp": round(last + (swing_high - swing_low)*1.618, 2),
+                    "sl": round(swing_low, 2), "tp": tp,
                     "smc": True}
         elif broke_down and last < swing_low:
+            tp = round(swing_low + (swing_high - swing_low) * (1 - fib_retracement), 2)
             return {"symbol": symbol, "side": "SHORT", "entry": last,
-                    "sl": round(swing_high, 2), "tp": round(last - (swing_high - swing_low)*1.618, 2),
+                    "sl": round(swing_high, 2), "tp": tp,
                     "smc": True}
     except: pass
     return None
 
 def detect_signal(symbol):
+    fib_retracement = 0.618
     k = get_klines(symbol)
     if not k: return None
     try:
@@ -58,11 +62,13 @@ def detect_signal(symbol):
         last = c[-1]
 
         if last > high * 0.995:
+            tp = round(high - (high - low) * (1 - fib_retracement), 2)
             return {"symbol": symbol, "side": "LONG", "entry": last,
-                    "sl": round(low, 2), "tp": round(last + (high - low)*1.618, 2)}
+                    "sl": round(low, 2), "tp": tp}
         elif last < low * 1.005:
+            tp = round(low + (high - low) * (1 - fib_retracement), 2)
             return {"symbol": symbol, "side": "SHORT", "entry": last,
-                    "sl": round(high, 2), "tp": round(last - (high - low)*1.618, 2)}
+                    "sl": round(high, 2), "tp": tp}
     except: pass
     return None
 
